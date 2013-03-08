@@ -2,7 +2,6 @@ from functools import wraps
 import logging
 
 from django.contrib import auth, messages
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import get_callable, reverse
@@ -401,13 +400,18 @@ class Shop(object):
         # overridden
         from plata.contact.forms import CheckoutForm
         return CheckoutForm
+    
+    def authentication_form(self, request, order):
+        """Returns the authentication form used in the first checkout step"""
+        from django.contrib.auth.forms import AuthenticationForm
+        return AuthenticationForm
 
     def checkout(self, request, order):
         """Handles the first step of the checkout process"""
         if not self.user_is_authenticated(request.user):
             if request.method == 'POST' and '_login' in request.POST:
-                loginform = AuthenticationForm(data=request.POST,
-                    prefix='login')
+                AuthenticationForm = self.authentication_form(request, order)
+                loginform = AuthenticationForm(data=request.POST, prefix='login')
 
                 if loginform.is_valid():
                     user = loginform.get_user()
