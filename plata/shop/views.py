@@ -409,8 +409,8 @@ class Shop(object):
     def checkout(self, request, order):
         """Handles the first step of the checkout process"""
         if not self.user_is_authenticated(request.user):
+            AuthenticationForm = self.authentication_form(request, order)
             if request.method == 'POST' and '_login' in request.POST:
-                AuthenticationForm = self.authentication_form(request, order)
                 loginform = AuthenticationForm(data=request.POST, prefix='login')
 
                 if loginform.is_valid():
