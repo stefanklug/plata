@@ -22,6 +22,12 @@ def cart_not_empty(order, shop, request, **kwargs):
     if not order or not order.items.count():
         messages.warning(request, _('Cart is empty.'))
         return shop.redirect('plata_shop_cart')
+    
+def user_is_authenticated(order, shop, request, **kwargs):
+    """ensure the user is authenticated and redirect to checkout if not"""
+    if not shop.user_is_authenticated(request.user):
+        messages.warning(request, _('You are not authenticated'))
+        return shop.redirect('plata_shop_checkout')
 
 
 def order_already_confirmed(order, shop, request, **kwargs):
@@ -157,11 +163,11 @@ class Shop(object):
                 )(self.checkout),
                 name='plata_shop_checkout'),
             url(r'^discounts/$', checkout_process_decorator(
-                cart_not_empty, order_already_confirmed, order_cart_validates,
+                user_is_authenticated, cart_not_empty, order_already_confirmed, order_cart_validates,
                 )(self.discounts),
                 name='plata_shop_discounts'),
             url(r'^confirmation/$', checkout_process_decorator(
-                    cart_not_empty, order_cart_validates,
+                    user_is_authenticated, cart_not_empty, order_cart_validates,
                 )(self.confirmation),
                 name='plata_shop_confirmation'),
 
