@@ -34,7 +34,7 @@ class OrderReport(object):
         self.pdf.next_frame()
 
     def title(self, title=None):
-        self.pdf.p(u'%s: %s' % (
+        self.pdf.p('%s: %s' % (
             capfirst(_('order date')),
             self.order.confirmed.strftime('%d.%m.%Y')
             if self.order.confirmed else _('Not confirmed yet'),
@@ -43,7 +43,7 @@ class OrderReport(object):
 
         if not title:
             title = _('Order')
-        self.pdf.h1(u'%s %s' % (title, self.order.order_id))
+        self.pdf.h1('%s %s' % (title, self.order.order_id))
         self.pdf.hr()
 
     def items_without_prices(self):
@@ -80,8 +80,8 @@ class OrderReport(object):
                     item.sku,
                     item.name,
                     item.quantity,
-                    u'%.2f' % item.unit_price,
-                    u'%.2f' % item.discounted_subtotal,
+                    '%.2f' % item.unit_price,
+                    '%.2f' % item.discounted_subtotal,
                 ) for item in self.order.items.all()
             ],
             (2 * cm, 6 * cm, 1 * cm, 3 * cm, 4.4 * cm),
@@ -92,45 +92,45 @@ class OrderReport(object):
     def summary(self):
         summary_table = [
             ('', ''),
-            (capfirst(_('subtotal')), u'%.2f' % self.order.subtotal),
+            (capfirst(_('subtotal')), '%.2f' % self.order.subtotal),
         ]
 
         if self.order.discount:
             summary_table.append((
                 capfirst(_('discount')),
-                u'%.2f' % self.order.discount))
+                '%.2f' % self.order.discount))
 
         if self.order.shipping:
             summary_table.append((
                 capfirst(_('shipping')),
-                u'%.2f' % self.order.shipping))
+                '%.2f' % self.order.shipping))
 
         self.pdf.table(
             summary_table, (12 * cm, 4.4 * cm), self.pdf.style.table)
 
         self.pdf.spacer(1 * mm)
 
-        total_title = u'%s %s' % (capfirst(_('total')), self.order.currency)
+        total_title = '%s %s' % (capfirst(_('total')), self.order.currency)
 
         if self.order.tax:
             if 'tax_details' in self.order.data:
                 zero = Decimal('0.00')
 
                 self.pdf.table([(
-                    u'',
-                    u'%s %s' % (
+                    '',
+                    '%s %s' % (
                         _('Incl. tax'),
-                        u'%.1f%%' % row['tax_rate'],
+                        '%.1f%%' % row['tax_rate'],
                         ),
                     row['total'].quantize(zero),
                     row['tax_amount'].quantize(zero),
-                    u'',
+                    '',
                     ) for rate, row in self.order.data['tax_details']],
                     (2 * cm, 4 * cm, 3 * cm, 3 * cm, 4.4 * cm),
                     self.pdf.style.table)
 
         self.pdf.table([
-            (total_title, u'%.2f' % self.order.total),
+            (total_title, '%.2f' % self.order.total),
             ], (12 * cm, 4.4 * cm), self.pdf.style.tableHead)
 
         self.pdf.spacer()

@@ -59,7 +59,7 @@ class Contact(models.Model):
     country = models.CharField(_('country'), max_length=3, blank=True)
 
     def __unicode__(self):
-        return unicode(self.user)
+        return str(self.user)
 
     def update_from_order(self, order, request=None):
         for field in self.ADDRESS_FIELDS:

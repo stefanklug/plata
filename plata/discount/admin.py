@@ -34,7 +34,7 @@ class DiscountAdminForm(forms.ModelForm):
             selected = self.data.getlist('config_options')
         except AttributeError:
             if self.instance.pk:
-                selected = self.instance.config.keys()
+                selected = list(self.instance.config.keys())
             else:
                 selected = None
 

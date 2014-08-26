@@ -55,7 +55,7 @@ def order_cart_validates(order, shop, request, **kwargs):
 
     try:
         order.validate(order.VALIDATE_CART)
-    except ValidationError, e:
+    except ValidationError as e:
         for message in e.messages:
             messages.error(request, message)
         return HttpResponseRedirect(
@@ -70,7 +70,7 @@ def order_cart_warnings(order, shop, request, **kwargs):
 
     try:
         order.validate(order.VALIDATE_CART)
-    except ValidationError, e:
+    except ValidationError as e:
         for message in e.messages:
             messages.warning(request, message)
 
@@ -145,7 +145,7 @@ class Shop(object):
         # everywhere using plata.shop_instance()
         plata.register(self)
 
-        for key, value in kwargs.items():
+        for key, value in list(kwargs.items()):
             if not hasattr(self, key):
                 raise TypeError('%s() received an invalid keyword %r' % (
                     self.__class__.__name__, key))

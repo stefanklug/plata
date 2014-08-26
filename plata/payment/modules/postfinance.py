@@ -105,14 +105,14 @@ class PaymentProcessor(ProcessorBase):
 
         form_params = {
             'orderID': 'Order-%d-%d' % (order.id, payment.id),
-            'amount': u'%s' % int(
+            'amount': '%s' % int(
                 order.balance_remaining.quantize(Decimal('0.00')) * 100),
             'currency': order.currency,
             'PSPID': POSTFINANCE['PSPID'],
             'mode': POSTFINANCE['LIVE'] and 'prod' or 'test',
         }
 
-        form_params['SHASign'] = sha1(u''.join((
+        form_params['SHASign'] = sha1(''.join((
             form_params['orderID'],
             form_params['amount'],
             form_params['currency'],
@@ -152,7 +152,7 @@ class PaymentProcessor(ProcessorBase):
                 logger.error('IPN: Missing data in %s' % parameters_repr)
                 return HttpResponseForbidden('Missing data')
 
-            sha1_source = u''.join((
+            sha1_source = ''.join((
                 orderID,
                 currency,
                 amount,
@@ -193,7 +193,7 @@ class PaymentProcessor(ProcessorBase):
             except order.payments.model.DoesNotExist:
                 payment = order.payments.model(
                     order=order,
-                    payment_module=u'%s' % self.name,
+                    payment_module='%s' % self.name,
                 )
 
             payment.status = OrderPayment.PROCESSED
@@ -224,6 +224,6 @@ class PaymentProcessor(ProcessorBase):
                 self.order_paid(order, payment=payment, request=request)
 
             return HttpResponse('OK')
-        except Exception, e:
-            logger.error('IPN: Processing failure %s' % unicode(e))
+        except Exception as e:
+            logger.error('IPN: Processing failure %s' % str(e))
             raise

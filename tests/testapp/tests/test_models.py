@@ -396,7 +396,7 @@ class ModelTest(PlataTest):
 
         try:
             d.validate(order)
-        except ValidationError, e:
+        except ValidationError as e:
             self.assertEqual(len(e.messages), 2)
 
         d.is_active = True
@@ -404,7 +404,7 @@ class ModelTest(PlataTest):
 
         try:
             d.validate(order)
-        except ValidationError, e:
+        except ValidationError as e:
             self.assertEqual(len(e.messages), 2)
 
     def test_11_multiple_discounts(self):
@@ -954,16 +954,16 @@ class ModelTest(PlataTest):
         order = self.create_order()
         orderitem = self.create_orderitem(product, order)
 
-        self.assertEqual(unicode(orderitem),
-                         u'1 of Test Product')
+        self.assertEqual(str(orderitem),
+                         '1 of Test Product')
         orderstatus = OrderStatus.objects.create(order=order, status=Order.PAID)
-        self.assertEqual(unicode(orderstatus),
-                         u'Status Order has been paid for O-000000001')
+        self.assertEqual(str(orderstatus),
+                         'Status Order has been paid for O-000000001')
         orderpayment = OrderPayment.objects.create(
             order=order, currency=100, amount=1,
             authorized=timezone.now())
-        self.assertEqual(unicode(orderpayment),
-                         u'Authorized of 100 1.00 for O-000000001')
+        self.assertEqual(str(orderpayment),
+                         'Authorized of 100 1.00 for O-000000001')
 
     def test_28_order_items_without_products(self):
         """Test order items where the product foreign key is NULL"""
@@ -1076,6 +1076,6 @@ class ModelTest(PlataTest):
 
         # Test the value_to_string method of the model field
         serialized = serialize('json', Order.objects.all())
-        self.assertTrue(isinstance(serialized, basestring))
+        self.assertTrue(isinstance(serialized, str))
         self.assertTrue('"model": "shop.order"' in serialized)
         self.assertTrue('\\"now_tz_with_ms\\"' in serialized)

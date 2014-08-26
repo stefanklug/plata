@@ -81,7 +81,7 @@ class OrderAdmin(admin.ModelAdmin):
             url = reverse(
                 'plata_reporting_packing_slip_pdf',
                 kwargs={'order_id': instance.id})
-            bits.append(u'<a href="%s">%s</a>' % (url, _('Packing slip')))
+            bits.append('<a href="%s">%s</a>' % (url, _('Packing slip')))
         except NoReverseMatch:
             pass
 
@@ -89,11 +89,11 @@ class OrderAdmin(admin.ModelAdmin):
             url = reverse(
                 'plata_reporting_invoice_pdf',
                 kwargs={'order_id': instance.id})
-            bits.append(u'<a href="%s">%s</a>' % (url, _('Invoice')))
+            bits.append('<a href="%s">%s</a>' % (url, _('Invoice')))
         except NoReverseMatch:
             pass
 
-        return u', '.join(bits)
+        return ', '.join(bits)
     additional_info.allow_tags = True
     additional_info.short_description = _('add. info')
 

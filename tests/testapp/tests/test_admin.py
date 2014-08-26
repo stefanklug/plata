@@ -112,7 +112,7 @@ class AdminTest(PlataTest):
 
             # Manually modified config_json overrides anything selected in the
             # generated form items
-            'config_json': u'{"all": {}}',
+            'config_json': '{"all": {}}',
             })
         self.assertRedirects(self.client.post('/admin/discount/discount/3/', discount_data),
             '/admin/discount/discount/')

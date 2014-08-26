@@ -47,5 +47,5 @@ class ProductBase(models.Model):
         sufficient for posteriority. Old orders should always be complete
         even if the products have been changed or deleted in the meantime.
         """
-        orderitem.name = unicode(self)
-        orderitem.sku = getattr(self, 'sku', u'')
+        orderitem.name = str(self)
+        orderitem.sku = getattr(self, 'sku', '')

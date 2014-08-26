@@ -65,7 +65,7 @@ A real-world example follows::
         weak=False)
 """
 
-from __future__ import with_statement
+
 
 import contextlib
 from io import BytesIO
@@ -107,7 +107,7 @@ class BaseHandler(object):
     def create_email_message(self, template_name, **kwargs):
         email = render_to_string(
             template_name, self.context(kwargs)).splitlines()
-        return EmailMessage(subject=email[0], body=u'\n'.join(email[2:]))
+        return EmailMessage(subject=email[0], body='\n'.join(email[2:]))
 
 
 class EmailHandler(BaseHandler):

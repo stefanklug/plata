@@ -11,7 +11,7 @@ Needs the following settings to work correctly::
 
 from decimal import Decimal
 import logging
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseForbidden
@@ -124,7 +124,7 @@ class PaymentProcessor(ProcessorBase):
                 querystring = 'cmd=_notify-validate&%s' % (
                     request.POST.urlencode()
                 )
-                status = urllib2.urlopen(PP_URL, querystring).read()
+                status = urllib.request.urlopen(PP_URL, querystring).read()
 
                 if not status == "VERIFIED":
                     logger.error(
@@ -164,7 +164,7 @@ class PaymentProcessor(ProcessorBase):
                 except (order.payments.model.DoesNotExist, ValueError):
                     payment = order.payments.model(
                         order=order,
-                        payment_module=u'%s' % self.name,
+                        payment_module='%s' % self.name,
                     )
 
                 payment.status = OrderPayment.PROCESSED
@@ -198,8 +198,8 @@ class PaymentProcessor(ProcessorBase):
 
                 return HttpResponse("Ok")
 
-        except Exception, e:
-            logger.error('IPN: Processing failure %s' % unicode(e))
+        except Exception as e:
+            logger.error('IPN: Processing failure %s' % str(e))
             raise
         else:
             logger.warning('IPN received without POST parameters')

@@ -56,7 +56,7 @@ def product_detail(request, object_id):
                     relative=form.cleaned_data.get('quantity'),
                     )
                 messages.success(request, _('The cart has been updated.'))
-            except ValidationError, e:
+            except ValidationError as e:
                 if e.code == 'order_sealed':
                     [messages.error(request, msg) for msg in e.messages]
                 else:

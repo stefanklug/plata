@@ -109,7 +109,7 @@ class ProcessorBase(object):
             currency=order.currency,
             amount=order.balance_remaining,
             payment_module_key=self.key,
-            payment_module=u'%s' % self.name,
+            payment_module='%s' % self.name,
         )
 
     def create_transactions(self, order, stage, **kwargs):

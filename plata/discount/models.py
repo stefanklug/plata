@@ -113,8 +113,8 @@ class DiscountBase(models.Model):
         orderitems = order.items.model._default_manager.filter(
             id__in=[item.id for item in items])
 
-        for key, parameters in self.config.items():
-            parameters = dict((str(k), v) for k, v in parameters.items())
+        for key, parameters in list(self.config.items()):
+            parameters = dict((str(k), v) for k, v in list(parameters.items()))
 
             cfg = dict(self.CONFIG_OPTIONS)[key]
 
@@ -201,7 +201,7 @@ RANDOM_CODE_CHARACTERS = (
 
 
 def generate_random_code():
-    return u''.join(random.sample(RANDOM_CODE_CHARACTERS, 10))
+    return ''.join(random.sample(RANDOM_CODE_CHARACTERS, 10))
 
 
 class Discount(DiscountBase):

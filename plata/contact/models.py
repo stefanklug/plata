@@ -37,7 +37,7 @@ class Contact(BillingShippingAddress):
         verbose_name_plural = _('contacts')
 
     def __unicode__(self):
-        return unicode(self.user)
+        return str(self.user)
 
     def update_from_order(self, order, request=None):
         """

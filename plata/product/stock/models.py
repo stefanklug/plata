@@ -269,7 +269,7 @@ class StockTransaction(models.Model):
     objects = StockTransactionManager()
 
     def __unicode__(self):
-        return u'%s %s of %s' % (
+        return '%s %s of %s' % (
             self.change,
             self.get_type_display(),
             self.product)

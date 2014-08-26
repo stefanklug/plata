@@ -10,7 +10,7 @@ from django.conf import settings
 try:  # pragma: no cover
   from django.contrib.auth import get_user_model
   User = get_user_model()
-except ImportError, e:
+except ImportError as e:
   from django.contrib.auth.models import User
 
 from django.core import mail
@@ -152,13 +152,13 @@ class ViewTest(PlataTest):
 
         self.assertEqual(self.client.post('/checkout/', {
             '_checkout': 1,
-            'order-billing_company': u'BigCorp',
-            'order-billing_first_name': u'Hans',
-            'order-billing_last_name': u'Muster',
-            'order-billing_address': u'Musterstrasse 42',
-            'order-billing_zip_code': u'8042',
-            'order-billing_city': u'Beispielstadt',
-            'order-billing_country': u'CH',
+            'order-billing_company': 'BigCorp',
+            'order-billing_first_name': 'Hans',
+            'order-billing_last_name': 'Muster',
+            'order-billing_address': 'Musterstrasse 42',
+            'order-billing_zip_code': '8042',
+            'order-billing_city': 'Beispielstadt',
+            'order-billing_country': 'CH',
             #'order-shipping_same_as_billing': True, # billing information is missing...
             'order-email': 'something@example.com',
             'order-currency': 'CHF',
@@ -166,13 +166,13 @@ class ViewTest(PlataTest):
 
         self.assertRedirects(self.client.post('/checkout/', {
             '_checkout': 1,
-            'order-billing_company': u'BigCorp',
-            'order-billing_first_name': u'Hans',
-            'order-billing_last_name': u'Muster',
-            'order-billing_address': u'Musterstrasse 42',
-            'order-billing_zip_code': u'8042',
-            'order-billing_city': u'Beispielstadt',
-            'order-billing_country': u'CH',
+            'order-billing_company': 'BigCorp',
+            'order-billing_first_name': 'Hans',
+            'order-billing_last_name': 'Muster',
+            'order-billing_address': 'Musterstrasse 42',
+            'order-billing_zip_code': '8042',
+            'order-billing_city': 'Beispielstadt',
+            'order-billing_country': 'CH',
             'order-shipping_same_as_billing': True,
             'order-email': 'something@example.com',
             'order-currency': 'CHF',
@@ -365,7 +365,7 @@ class ViewTest(PlataTest):
             'mc_currency': 'CHF',
             'mc_gross': '1234',
             'payment_status': 'Completed',
-            'last_name': u'H\xe5konsen',
+            'last_name': 'H\xe5konsen',
         }
 
         from plata.payment.modules import paypal
@@ -373,8 +373,8 @@ class ViewTest(PlataTest):
         def mock_urlopen(*args, **kwargs):
             qs = cgi.parse_qs(args[1].encode('ascii'))
             self.assertEqual(qs['cmd'][0], '_notify-validate')
-            for k, v in paypal_ipn_data.iteritems():
-                self.assertEqual(unicode(qs[k][0], 'utf-8'), v)
+            for k, v in paypal_ipn_data.items():
+                self.assertEqual(str(qs[k][0], 'utf-8'), v)
             s = BytesIO('VERIFIED')
             return s
         paypal.urllib2.urlopen = mock_urlopen
@@ -408,10 +408,7 @@ class ViewTest(PlataTest):
             self.client.post(
                 '/payment/paypal/ipn/',
                 dict(
-                    map(
-                        lambda (k,v): (k, v.encode('windows-1252')),
-                        dict(paypal_ipn_data, charset='windows-1252').items()
-                    )
+                    [(k_v[0], k_v[1].encode('windows-1252')) for k_v in list(dict(paypal_ipn_data, charset='windows-1252').items())]
                 ),
             ),
             'Ok'
@@ -448,13 +445,13 @@ class ViewTest(PlataTest):
 
         checkout_data = {
             '_checkout': 1,
-            'order-billing_company': u'BigCorp',
-            'order-billing_first_name': u'Hans',
-            'order-billing_last_name': u'Muster',
-            'order-billing_address': u'Musterstrasse 42',
-            'order-billing_zip_code': u'8042',
-            'order-billing_city': u'Beispielstadt',
-            'order-billing_country': u'CH',
+            'order-billing_company': 'BigCorp',
+            'order-billing_first_name': 'Hans',
+            'order-billing_last_name': 'Muster',
+            'order-billing_address': 'Musterstrasse 42',
+            'order-billing_zip_code': '8042',
+            'order-billing_city': 'Beispielstadt',
+            'order-billing_country': 'CH',
             'order-shipping_same_as_billing': True,
             'order-email': 'else@example.com',
             'order-currency': 'CHF',
@@ -491,13 +488,13 @@ class ViewTest(PlataTest):
 
         checkout_data = {
             '_checkout': 1,
-            'order-billing_company': u'BigCorp',
-            'order-billing_first_name': u'Hans',
-            'order-billing_last_name': u'Muster',
-            'order-billing_address': u'Musterstrasse 42',
-            'order-billing_zip_code': u'8042',
-            'order-billing_city': u'Beispielstadt',
-            'order-billing_country': u'CH',
+            'order-billing_company': 'BigCorp',
+            'order-billing_first_name': 'Hans',
+            'order-billing_last_name': 'Muster',
+            'order-billing_address': 'Musterstrasse 42',
+            'order-billing_zip_code': '8042',
+            'order-billing_city': 'Beispielstadt',
+            'order-billing_country': 'CH',
             'order-shipping_same_as_billing': True,
             'order-email': 'else@example.com',
             'order-currency': 'CHF',
@@ -556,13 +553,13 @@ class ViewTest(PlataTest):
 
         checkout_data = {
             '_checkout': 1,
-            'order-billing_company': u'BigCorp',
-            'order-billing_first_name': u'Fritz',
-            'order-billing_last_name': u'Muster',
-            'order-billing_address': u'Musterstrasse 42',
-            'order-billing_zip_code': u'8042',
-            'order-billing_city': u'Beispielstadt',
-            'order-billing_country': u'CH',
+            'order-billing_company': 'BigCorp',
+            'order-billing_first_name': 'Fritz',
+            'order-billing_last_name': 'Muster',
+            'order-billing_address': 'Musterstrasse 42',
+            'order-billing_zip_code': '8042',
+            'order-billing_city': 'Beispielstadt',
+            'order-billing_country': 'CH',
             'order-shipping_same_as_billing': True,
             'order-email': 'else@example.com',
             'order-currency': 'CHF',
@@ -577,7 +574,7 @@ class ViewTest(PlataTest):
         contact = Contact.objects.get()
         # First name should be updated in checkout processing
         self.assertEqual(contact.billing_first_name, 'Fritz')
-        self.assertEqual(unicode(contact), 'else@example.com') # Username
+        self.assertEqual(str(contact), 'else@example.com') # Username
 
         # Order should be assigned to contact
         self.assertEqual(Order.objects.count(), 1)
@@ -602,13 +599,13 @@ class ViewTest(PlataTest):
 
         checkout_data = {
             '_checkout': 1,
-            'order-billing_company': u'BigCorp',
-            'order-billing_first_name': u'Fritz',
-            'order-billing_last_name': u'Muster',
-            'order-billing_address': u'Musterstrasse 42',
-            'order-billing_zip_code': u'8042',
-            'order-billing_city': u'Beispielstadt',
-            'order-billing_country': u'CH',
+            'order-billing_company': 'BigCorp',
+            'order-billing_first_name': 'Fritz',
+            'order-billing_last_name': 'Muster',
+            'order-billing_address': 'Musterstrasse 42',
+            'order-billing_zip_code': '8042',
+            'order-billing_city': 'Beispielstadt',
+            'order-billing_country': 'CH',
             'order-shipping_same_as_billing': True,
             'order-email': 'else@example.com',
             'order-currency': 'CHF',

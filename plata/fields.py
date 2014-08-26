@@ -23,7 +23,7 @@ CurrencyField = curry(
     models.CharField,
     _('currency'),
     max_length=3,
-    choices=zip(plata.settings.CURRENCIES, plata.settings.CURRENCIES),
+    choices=list(zip(plata.settings.CURRENCIES, plata.settings.CURRENCIES)),
 )
 
 
@@ -59,7 +59,7 @@ _PATTERNS = [
 
 def json_decode_hook(data):
     for key, value in list(data.items()):
-        if not isinstance(value, basestring):
+        if not isinstance(value, str):
             continue
 
         for regex, fns in _PATTERNS:
@@ -97,16 +97,13 @@ class JSONFormField(forms.fields.CharField):
         return super(JSONFormField, self).clean(value, *args, **kwargs)
 
 
-class JSONField(models.TextField):
+class JSONField(models.TextField, metaclass=models.SubfieldBase):
     """
     TextField which transparently serializes/unserializes JSON objects
 
     See:
     http://www.djangosnippets.org/snippets/1478/
     """
-
-    # Used so to_python() is called
-    __metaclass__ = models.SubfieldBase
 
     formfield = JSONFormField
 
@@ -115,7 +112,7 @@ class JSONField(models.TextField):
 
         if isinstance(value, dict):
             return value
-        elif isinstance(value, basestring):
+        elif isinstance(value, str):
             # Avoid asking the JSON decoder to handle empty values:
             if not value:
                 return {}
@@ -159,7 +156,7 @@ class JSONField(models.TextField):
                 value, use_decimal=True,
                 default=json_encode_default)
 
-        assert isinstance(value, basestring)
+        assert isinstance(value, str)
 
         return value
 

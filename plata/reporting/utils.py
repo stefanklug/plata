@@ -26,7 +26,7 @@ class XLSDocument(object):
                 elif value is None:
                     processed.append('-')
                 else:
-                    processed.append(unicode(value).strip())
+                    processed.append(str(value).strip())
 
             self.sheet.append(processed)
 

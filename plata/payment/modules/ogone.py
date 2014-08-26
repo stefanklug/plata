@@ -112,36 +112,36 @@ class PaymentProcessor(ProcessorBase):
         form_params = {
             'PSPID': OGONE['PSPID'],
             'orderID': 'Order-%d-%d' % (order.id, payment.id),
-            'amount': u'%s' % int(
+            'amount': '%s' % int(
                 order.balance_remaining.quantize(Decimal('0.00')) * 100),
             'currency': order.currency,
             'language': locale.normalize(
                 to_locale(get_language())).split('.')[0],
-            'CN': u'%s %s' % (
+            'CN': '%s %s' % (
                 order.billing_first_name,
                 order.billing_last_name),
             'EMAIL': order.email,
             'ownerZIP': order.billing_zip_code,
             'owneraddress': order.billing_address,
             'ownertown': order.billing_city,
-            'accepturl': u'http://%s%s' % (
+            'accepturl': 'http://%s%s' % (
                 request.META.get('HTTP_HOST'),
                 reverse('plata_order_success')),
-            'declineurl': u'http://%s%s' % (
+            'declineurl': 'http://%s%s' % (
                 request.META.get('HTTP_HOST'),
                 reverse('plata_order_payment_failure')),
-            'exceptionurl': u'http://%s%s' % (
+            'exceptionurl': 'http://%s%s' % (
                 request.META.get('HTTP_HOST'),
                 reverse('plata_order_payment_failure')),
-            'cancelurl': u'http://%s%s' % (
+            'cancelurl': 'http://%s%s' % (
                 request.META.get('HTTP_HOST'),
                 reverse('plata_order_payment_failure')),
         }
         # create hash
         value_strings = [
-            u'{0}={1}{2}'.format(key.upper(), value, OGONE['SHA1_IN'])
-            for key, value in form_params.items()]
-        hash_string = u''.join(sorted(value_strings))
+            '{0}={1}{2}'.format(key.upper(), value, OGONE['SHA1_IN'])
+            for key, value in list(form_params.items())]
+        hash_string = ''.join(sorted(value_strings))
         encoded_hash_string = sha1(hash_string.encode('utf-8')).hexdigest()
 
         # add hash and additional params
@@ -173,16 +173,16 @@ class PaymentProcessor(ProcessorBase):
                 PAYID = request.POST['PAYID']
                 BRAND = request.POST['BRAND']
                 SHASIGN = request.POST['SHASIGN']
-            except KeyError, e:
+            except KeyError as e:
                 logger.error('IPN: Missing data in %s' % parameters_repr)
                 return HttpResponseForbidden('Missing data')
 
             value_strings = [
-                u'{0}={1}{2}'.format(key.upper(), value, OGONE['SHA1_OUT'])
-                for key, value in request.POST.iteritems()
+                '{0}={1}{2}'.format(key.upper(), value, OGONE['SHA1_OUT'])
+                for key, value in request.POST.items()
                 if value and not key == 'SHASIGN']
             sha1_out = sha1(
-                (u''.join(sorted(value_strings))).encode('utf-8')).hexdigest()
+                (''.join(sorted(value_strings))).encode('utf-8')).hexdigest()
 
             if sha1_out.lower() != SHASIGN.lower():
                 logger.error('IPN: Invalid hash in %s' % parameters_repr)
@@ -209,7 +209,7 @@ class PaymentProcessor(ProcessorBase):
             except order.payments.model.DoesNotExist:
                 payment = order.payments.model(
                     order=order,
-                    payment_module=u'%s' % self.name,
+                    payment_module='%s' % self.name,
                 )
 
             payment.status = OrderPayment.PROCESSED
@@ -240,6 +240,6 @@ class PaymentProcessor(ProcessorBase):
                 self.order_paid(order, payment=payment, request=request)
 
             return HttpResponse('OK')
-        except Exception, e:
-            logger.error('IPN: Processing failure %s' % unicode(e))
+        except Exception as e:
+            logger.error('IPN: Processing failure %s' % str(e))
             raise

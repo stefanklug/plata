@@ -34,7 +34,7 @@ def product_xls():
         capfirst(_('stock')),
     ]
     titles.extend(
-        unicode(name) for key, name in StockTransaction.TYPE_CHOICES)
+        str(name) for key, name in StockTransaction.TYPE_CHOICES)
 
     data = []
 
